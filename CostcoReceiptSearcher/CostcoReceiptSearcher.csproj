@@ -6,6 +6,9 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <AssemblyName>Costco Receipt Searcher</AssemblyName>
+        <Company>Jonathan Garza</Company>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,6 +22,10 @@
     <ItemGroup>
       <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Core\Ncl.Common.Core.csproj" />
       <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Wpf\Ncl.Common.Wpf.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Infrastructure\" />
     </ItemGroup>
 
 </Project>

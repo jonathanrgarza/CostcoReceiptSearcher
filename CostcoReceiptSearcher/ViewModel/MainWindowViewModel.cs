@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
+using CostcoReceiptSearcher.View;
 using Ncl.Common.Core.UI;
 
 namespace CostcoReceiptSearcher.ViewModel
@@ -16,7 +18,7 @@ namespace CostcoReceiptSearcher.ViewModel
 
         public string SearchText
         {
-            get { return _searchText; }
+            get => _searchText;
             set
             {
                 if (Equals(value, _searchText))
@@ -40,7 +42,7 @@ namespace CostcoReceiptSearcher.ViewModel
 
         public PdfFile? SelectedPdfFile
         {
-            get { return _selectedPdfFile; }
+            get => _selectedPdfFile;
             set
             {
                 if (Equals(value, _selectedPdfFile))
@@ -49,6 +51,12 @@ namespace CostcoReceiptSearcher.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        public ICommand MenuExitCommand { get; }
+
+        public ICommand MenuPreferencesCommand { get; }
+
+        public ICommand MenuAboutCommand { get; }
 
         public ICommand SearchCommand { get; }
 
@@ -61,6 +69,9 @@ namespace CostcoReceiptSearcher.ViewModel
             SearchCommand = new RelayCommandAsync(SearchExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute);
             OpenFolderCommand = new RelayCommand(OpenFolderExecute);
+            MenuExitCommand = new RelayCommand(() => Application.Current.Shutdown());
+            MenuPreferencesCommand = new RelayCommand(() => new PreferencesWindow().ShowDialog());
+            MenuAboutCommand = new RelayCommand(() => new AboutWindow().ShowDialog());
         }
 
         private async Task SearchExecute()

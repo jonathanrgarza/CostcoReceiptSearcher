@@ -7,7 +7,7 @@
     xmlns:model="clr-namespace:CostcoReceiptSearcher.Model"
     xmlns:viewModel="clr-namespace:CostcoReceiptSearcher.ViewModel"
     mc:Ignorable="d"
-    Title="MainWindow" Height="450" Width="800">
+    Title="Costco Receipt Searcher" Height="450" Width="800">
     <Window.DataContext>
         <viewModel:MainWindowViewModel />
     </Window.DataContext>
@@ -15,9 +15,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="5">
+        <Menu Grid.Row="0">
+            <MenuItem Header="File">
+                <MenuItem Header="Preferences" Command="{Binding MenuPreferencesCommand}" />
+                <MenuItem Header="About" Command="{Binding MenuAboutCommand}" />
+                <MenuItem Header="Exit" Command="{Binding MenuExitCommand}" />
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -25,8 +33,8 @@
             <Label Grid.Column="0" Target="SearchTextField">Search: </Label>
             <TextBox Grid.Column="1" Name="SearchTextField" HorizontalAlignment="Stretch" Text="{Binding SearchText}" />
         </Grid>
-        <Button Grid.Row="1" Content="Search" Command="{Binding SearchCommand}" Margin="5" />
-        <ListView Grid.Row="2" ItemsSource="{Binding MatchingPdfFiles}" Margin="5">
+        <Button Grid.Row="2" Content="Search" Command="{Binding SearchCommand}" Margin="5" />
+        <ListView Grid.Row="3" ItemsSource="{Binding MatchingPdfFiles}" Margin="5">
             <ListView.ItemTemplate>
                 <DataTemplate DataType="{x:Type model:PdfFile}">
                     <ListBoxItem MouseDoubleClick="ListBoxItem_MouseDoubleClick">

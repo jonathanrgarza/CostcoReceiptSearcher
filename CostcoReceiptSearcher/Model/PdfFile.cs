@@ -2,17 +2,11 @@
 
 namespace CostcoReceiptSearcher.Model;
 
-public class PdfFile
+public class PdfFile(string filePath)
 {
-    public PdfFile(string filePath)
-    {
-        FilePath = filePath;
-        FileName = Path.GetFileName(filePath);
-    }
+    public string FilePath { get; init; } = filePath;
 
-    public string FilePath { get; init; }
-
-    public string FileName { get; }
+    public string FileName { get; } = Path.GetFileName(filePath);
 
     public string[]? Lines { get; set; }
 }
