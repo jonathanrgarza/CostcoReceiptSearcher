@@ -16,4 +16,9 @@
       </Page>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Core\Ncl.Common.Core.csproj" />
+      <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Wpf\Ncl.Common.Wpf.csproj" />
+    </ItemGroup>
+
 </Project>

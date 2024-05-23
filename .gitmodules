@@ -1,0 +1,3 @@
+[submodule "libs/NovaCommonLibrary"]
+	path = libs/NovaCommonLibrary
+	url = https://github.com/jonathanrgarza/NovaCommonLibrary.git

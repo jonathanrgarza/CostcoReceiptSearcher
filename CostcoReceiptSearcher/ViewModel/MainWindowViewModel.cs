@@ -3,10 +3,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
+using Ncl.Common.Core.UI;
 
 namespace CostcoReceiptSearcher.ViewModel
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : ViewModelBase
     {
         private ObservableCollection<PdfFile> _matchingPdfFiles = [];
 
@@ -73,31 +74,5 @@ namespace CostcoReceiptSearcher.ViewModel
             string argument = "/select, \"" + _selectedPdfFile.FilePath + "\"";
             Process.Start("explorer.exe", argument);
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public class RelayCommand : ICommand
-    {
-        public RelayCommand(Action action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool CanExecute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Execute(object? parameter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public event EventHandler? CanExecuteChanged;
     }
 }

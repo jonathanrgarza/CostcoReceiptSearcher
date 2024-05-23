@@ -2,6 +2,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CostcoReceiptSearcher", "CostcoReceiptSearcher\CostcoReceiptSearcher.csproj", "{258B80D6-163F-4AF0-828A-F4C599399CF8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{2A3436EA-B6F6-41E4-9E52-59FFD692C529}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncl.Common.Core", "libs\NovaCommonLibrary\Ncl.Common.Core\Ncl.Common.Core.csproj", "{9968A9CF-A883-412F-8F38-2BC7F769F5E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncl.Common.Modern.Core", "libs\NovaCommonLibrary\Ncl.Common.Modern.Core\Ncl.Common.Modern.Core.csproj", "{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncl.Common.Windows", "libs\NovaCommonLibrary\Ncl.Common.Windows\Ncl.Common.Windows.csproj", "{5B384896-FEE4-4B8F-8919-7CFB7140228D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncl.Common.Wpf", "libs\NovaCommonLibrary\Ncl.Common.Wpf\Ncl.Common.Wpf.csproj", "{6C2E9364-1422-42C6-9ECC-C795822EA356}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +22,27 @@ Global
 		{258B80D6-163F-4AF0-828A-F4C599399CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{258B80D6-163F-4AF0-828A-F4C599399CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{258B80D6-163F-4AF0-828A-F4C599399CF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9968A9CF-A883-412F-8F38-2BC7F769F5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9968A9CF-A883-412F-8F38-2BC7F769F5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9968A9CF-A883-412F-8F38-2BC7F769F5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9968A9CF-A883-412F-8F38-2BC7F769F5E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B384896-FEE4-4B8F-8919-7CFB7140228D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B384896-FEE4-4B8F-8919-7CFB7140228D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B384896-FEE4-4B8F-8919-7CFB7140228D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B384896-FEE4-4B8F-8919-7CFB7140228D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C2E9364-1422-42C6-9ECC-C795822EA356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C2E9364-1422-42C6-9ECC-C795822EA356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C2E9364-1422-42C6-9ECC-C795822EA356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C2E9364-1422-42C6-9ECC-C795822EA356}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9968A9CF-A883-412F-8F38-2BC7F769F5E0} = {2A3436EA-B6F6-41E4-9E52-59FFD692C529}
+		{592F0EE7-4503-4AFE-A0C0-FC2B833AF07C} = {2A3436EA-B6F6-41E4-9E52-59FFD692C529}
+		{5B384896-FEE4-4B8F-8919-7CFB7140228D} = {2A3436EA-B6F6-41E4-9E52-59FFD692C529}
+		{6C2E9364-1422-42C6-9ECC-C795822EA356} = {2A3436EA-B6F6-41E4-9E52-59FFD692C529}
 	EndGlobalSection
 EndGlobal
