@@ -169,8 +169,11 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     {
         // Load the preferences
         _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
-        _pdfDirectories.Clear();
-        _pdfDirectories = new ObservableCollection<string>(_preferences.PdfDirectories);
+        AllowWildcardSearch = _preferences.AllowWildcardSearch;
+        CaseInsensitiveSearch = _preferences.CaseInsensitiveSearch;
+        SearchInSubdirectories = _preferences.SearchInSubdirectories;
+        PdfDirectories.Clear();
+        PdfDirectories = new ObservableCollection<string>(_preferences.PdfDirectories);
         SelectedDirectory = string.Empty;
         OnPropertyChanged(nameof(Preferences));
     }

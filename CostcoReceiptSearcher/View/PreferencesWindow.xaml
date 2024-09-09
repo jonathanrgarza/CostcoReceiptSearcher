@@ -26,9 +26,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding Preferences.AllowWildcardSearch}" />
-            <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding Preferences.CaseInsensitiveSearch}" />
-            <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding Preferences.SearchInSubdirectories}" />
+            <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding AllowWildcardSearch}" />
+            <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding CaseInsensitiveSearch}" />
+            <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding SearchInSubdirectories}" />
             <Label Grid.Row="3" Content="PDF Source Directories" Target="PdfDirectories" />
             <ListBox 
                 Grid.Row="4"

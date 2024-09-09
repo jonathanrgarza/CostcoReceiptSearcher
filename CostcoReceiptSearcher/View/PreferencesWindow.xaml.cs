@@ -35,6 +35,10 @@ public partial class PreferencesWindow : Window, ICloseable
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (e.PropertyName == nameof(ViewModel.SelectedDirectory))
+        {
+
+        }
     }
 
     private void AddPdfDirectoryClicked(object? sender, RoutedEventArgs e)

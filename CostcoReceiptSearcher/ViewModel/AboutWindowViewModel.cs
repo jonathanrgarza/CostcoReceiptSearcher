@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using System.Windows.Input;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
-public interface IAboutWindowViewModel
+public interface IAboutWindowViewModel : INotifyPropertyChanged
 {
     string Title { get; }
     string Version { get; }

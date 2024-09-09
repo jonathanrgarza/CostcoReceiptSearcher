@@ -14,7 +14,10 @@ public sealed class PreferenceService : PreferenceServiceBase
         FallbackDirectory = null;
         DefaultDirectory = Path.Combine(appDataPath, "CostcoReceiptSearcher", "Preferences");
         //Create the directory if it doesn't exist in debug release mode only
-        if (Debugger.IsAttached && !Directory.Exists(DefaultDirectory)) Directory.CreateDirectory(DefaultDirectory);
+        if (Debugger.IsAttached && !Directory.Exists(DefaultDirectory))
+        {
+            Directory.CreateDirectory(DefaultDirectory);
+        }
     }
 
     public PreferenceService(IXmlSerializationService xmlSerializationService) : this()
