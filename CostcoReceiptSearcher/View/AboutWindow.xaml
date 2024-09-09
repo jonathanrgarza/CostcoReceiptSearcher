@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:CostcoReceiptSearcher.ViewModel"
         mc:Ignorable="d"
-        Title="About" Height="200" Width="400">
-    <Window.DataContext>
-        <viewModel:AboutWindowViewModel />
-    </Window.DataContext>
+        xmlns:designData="clr-namespace:CostcoReceiptSearcher.ViewModel.DesignData"
+        d:DataContext="{d:DesignInstance designData:DesignDataAboutWindowViewModel, IsDesignTimeCreatable=True}"
+        Title="About" Height="200" Width="400" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="3"></Setter>
@@ -47,6 +46,8 @@
             Grid.Row="4"
             Grid.Column="1"
             Content="OK"
+            IsDefault="True"
+            IsCancel="True"
             Padding="5" Margin="3" HorizontalAlignment="Right"
             Command="{Binding OkCommand}"
             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />

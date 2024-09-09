@@ -4,17 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModel="clr-namespace:CostcoReceiptSearcher.ViewModel"
+    xmlns:converters="clr-namespace:Ncl.Common.Wpf.Converters;assembly=Ncl.Common.Wpf"
     mc:Ignorable="d"
-    Title="Preferences" Height="200" Width="400">
-    <Window.DataContext>
-        <viewModel:PreferencesWindowViewModel />
-    </Window.DataContext>
+    xmlns:designData="clr-namespace:CostcoReceiptSearcher.ViewModel.DesignData"
+    d:DataContext="{d:DesignInstance designData:DesignDataPreferencesWindowViewModel, IsDesignTimeCreatable=True}"
+    Title="Preferences" Height="250" Width="400" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,0,10,0"/>
-            <Setter Property="Padding" Value="5"></Setter>
+            <Setter Property="Padding" Value="5" />
         </Style>
+        <converters:NonEmptyStringToBoolConverter x:Key="NonEmptyStringToBoolConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="False">
         <Grid DockPanel.Dock="Top" Margin="10">
@@ -24,23 +24,38 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding Preferences.AllowWildcardSearch}" />
             <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding Preferences.CaseInsensitiveSearch}" />
             <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding Preferences.SearchInSubdirectories}" />
-            <ListBox Grid.Row="3" ItemsSource="{Binding Preferences.PdfDirectories}" SelectedItem="{Binding SelectedDirectory}" />
-            <Grid Grid.Row="4">
+            <Label Grid.Row="3" Content="PDF Source Directories" Target="PdfDirectories" />
+            <ListBox 
+                Grid.Row="4"
+                x:Name="PdfDirectories"
+                MinHeight="25"
+                ItemsSource="{Binding PdfDirectories}"
+                SelectedItem="{Binding SelectedDirectory}" />
+            <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0" Text="{Binding NewDirectory}" />
-                <Button Grid.Column="1" Content="Add" Command="{Binding AddDirectoryCommand}" Style="{StaticResource ButtonStyle}" />
-                <Button Grid.Column="2" Content="Remove" Command="{Binding RemoveDirectoryCommand}" Style="{StaticResource ButtonStyle}" />
+                <Button Grid.Column="1" Content="Add" Style="{StaticResource ButtonStyle}" Click="AddPdfDirectoryClicked" />
+                <Button 
+                    Grid.Column="2"
+                    Content="Remove" Style="{StaticResource ButtonStyle}"
+                    IsEnabled="{Binding SelectedDirectory, Converter={StaticResource NonEmptyStringToBoolConverter}}"
+                    Click="RemovePdfDirectoryClicked" />
             </Grid>
         </Grid>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button
+                Content="Defaults"
+                Command="{Binding DefaultsCommand}"
+                Style="{StaticResource ButtonStyle}" />
             <Button
                 Content="OK"
                 Command="{Binding OkCommand}"
@@ -48,12 +63,9 @@
                 Style="{StaticResource ButtonStyle}" />
             <Button
                 Content="Cancel"
+                IsCancel="True"
                 Command="{Binding CancelCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
-                Style="{StaticResource ButtonStyle}" />
-            <Button
-                Content="Defaults"
-                Command="{Binding DefaultsCommand}"
                 Style="{StaticResource ButtonStyle}" />
         </StackPanel>
     </DockPanel>

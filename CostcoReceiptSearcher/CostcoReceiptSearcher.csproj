@@ -12,6 +12,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Page Update="View\MainWindow.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
@@ -22,10 +27,6 @@
     <ItemGroup>
       <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Core\Ncl.Common.Core.csproj" />
       <ProjectReference Include="..\libs\NovaCommonLibrary\Ncl.Common.Wpf\Ncl.Common.Wpf.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Infrastructure\" />
     </ItemGroup>
 
 </Project>

@@ -5,7 +5,16 @@ using Ncl.Common.Wpf.Infrastructure;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
-public class AboutWindowViewModel : ViewModelBase
+public interface IAboutWindowViewModel
+{
+    string Title { get; }
+    string Version { get; }
+    string Description { get; }
+    string Author { get; }
+    ICommand OkCommand { get; }
+}
+
+public class AboutWindowViewModel : ViewModelBase, IAboutWindowViewModel
 {
     public string Title
     {

@@ -10,14 +10,18 @@ namespace CostcoReceiptSearcher.View;
 /// </summary>
 public partial class MainWindow : Window, ICloseable
 {
-    public MainWindow()
+    public MainWindow(IMainWindowViewModel viewModel)
     {
+        ViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+        DataContext = viewModel;
+
         InitializeComponent();
     }
 
+    public IMainWindowViewModel ViewModel { get; }
+
     private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        var viewModel = (MainWindowViewModel)DataContext;
-        viewModel.OpenFileCommand.Execute(null);
+        ViewModel.OpenFileCommand.Execute(null);
     }
 }
