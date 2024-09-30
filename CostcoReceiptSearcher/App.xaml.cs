@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using CostcoReceiptSearcher.Extensions;
 using CostcoReceiptSearcher.Infrastructure;
+using CostcoReceiptSearcher.Preferences;
 using CostcoReceiptSearcher.View;
 using CostcoReceiptSearcher.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +58,9 @@ public partial class App
         // Setup dialog registrations
         SetupDialogManagerRegistrations(services);
 
+        // Setup preference service
+        SetupPreferenceService(services);
+
         // Show the main window
         var mainWindow = services.GetRequiredService<MainWindow>();
         windowManager.ShowWindow(mainWindow);
@@ -87,5 +91,13 @@ public partial class App
         dialogService.Register<IAboutWindowViewModel>(services.GetRequiredService<IWindowFactory<AboutWindow>>());
         dialogService.Register<IPreferencesWindowViewModel>(services
             .GetRequiredService<IWindowFactory<PreferencesWindow>>());
+    }
+
+    private void SetupPreferenceService(IServiceProvider services)
+    {
+        var preferenceService = services.GetRequiredService<ICustomizablePreferenceService>();
+
+        // Register the preferences
+        preferenceService.RegisterDefaultPreferences([new GeneralPreferences()]);
     }
 }

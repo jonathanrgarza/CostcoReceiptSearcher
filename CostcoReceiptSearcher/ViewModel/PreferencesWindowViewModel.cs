@@ -333,6 +333,10 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     {
         // Reset the preferences to their default values
         var preferences = _preferenceService.GetDefaultPreference<GeneralPreferences>();
+        if (preferences == null)
+        {
+            return;
+        }
         LoadPreferences(preferences);
     }
 }
