@@ -16,11 +16,18 @@ public partial class MainWindow : Window, ICloseable
         DataContext = viewModel;
 
         InitializeComponent();
+
+        Loaded += MainWindow_Loaded;
+    }
+
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        ViewModel.OnLoaded();
     }
 
     public IMainWindowViewModel ViewModel { get; }
 
-    private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
         ViewModel.OpenFileCommand.Execute(null);
     }
