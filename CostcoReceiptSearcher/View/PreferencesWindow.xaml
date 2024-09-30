@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Ncl.Common.Wpf.Converters;assembly=Ncl.Common.Wpf"
-    mc:Ignorable="d"
     xmlns:designData="clr-namespace:CostcoReceiptSearcher.ViewModel.DesignData"
+    mc:Ignorable="d"
     d:DataContext="{d:DesignInstance designData:DesignDataPreferencesWindowViewModel, IsDesignTimeCreatable=True}"
     Title="Preferences" Height="250" Width="400" WindowStartupLocation="CenterOwner">
     <Window.Resources>

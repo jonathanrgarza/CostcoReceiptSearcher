@@ -23,9 +23,9 @@ internal class DesignDataPreferencesWindowViewModel : IPreferencesWindowViewMode
 
     public string NewDirectory { get; set; } = "E:\\PDFs";
 
-    public RelayCommand<ICloseable> OkCommand { get; } = new(_ => { });
+    public RelayCommand<ICloseableDialog> OkCommand { get; } = new(_ => { });
 
-    public RelayCommand<ICloseable> CancelCommand { get; } = new(_ => { });
+    public RelayCommand<ICloseableDialog> CancelCommand { get; } = new(_ => { });
 
     public ICommand DefaultsCommand { get; } = new RelayCommand(() => { });
 

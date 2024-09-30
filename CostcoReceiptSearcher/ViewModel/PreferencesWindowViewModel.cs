@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Preferences;
 using Ncl.Common.Core.Preferences;
@@ -17,8 +18,8 @@ public interface IPreferencesWindowViewModel : INotifyPropertyChanged
     ObservableCollection<string> PdfDirectories { get; set; }
     string SelectedDirectory { get; set; }
     string NewDirectory { get; set; }
-    RelayCommand<ICloseable> OkCommand { get; }
-    RelayCommand<ICloseable> CancelCommand { get; }
+    RelayCommand<ICloseableDialog> OkCommand { get; }
+    RelayCommand<ICloseableDialog> CancelCommand { get; }
     ICommand DefaultsCommand { get; }
     bool AddPdfDirectory(string directory);
     bool RemovePdfDirectory(string directory);
@@ -36,7 +37,6 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     private bool _searchInSubdirectories;
     private string _selectedDirectory;
 
-
     public PreferencesWindowViewModel(IPreferenceService preferenceService)
     {
         _preferenceService = preferenceService ?? throw new ArgumentNullException(nameof(preferenceService));
@@ -45,15 +45,9 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         _selectedDirectory = string.Empty;
         _pdfDirectories = new ObservableCollection<string>(_preferences.PdfDirectories);
 
-        OkCommand = new RelayCommand<ICloseable>(OkExecute);
-        CancelCommand = new RelayCommand<ICloseable>(CancelExecute);
+        OkCommand = new RelayCommand<ICloseableDialog>(OkExecute);
+        CancelCommand = new RelayCommand<ICloseableDialog>(CancelExecute);
         DefaultsCommand = new RelayCommand(DefaultsExecute);
-    }
-
-    public PreferencesWindowViewModel(IPreferenceService preferenceService, GeneralPreferences preferences) : this(
-        preferenceService)
-    {
-        LoadPreferences(preferences);
     }
 
     public GeneralPreferences Preferences
@@ -61,7 +55,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _preferences;
         set
         {
-            if (Equals(value, _preferences))
+            if (Equals(_preferences, value))
                 return;
             LoadPreferences(value);
         }
@@ -72,7 +66,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _allowWildcardSearch;
         set
         {
-            if (value == _allowWildcardSearch)
+            if (_allowWildcardSearch == value)
                 return;
             _allowWildcardSearch = value;
             OnPropertyChanged();
@@ -84,7 +78,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _caseInsensitiveSearch;
         set
         {
-            if (value == _caseInsensitiveSearch)
+            if (_caseInsensitiveSearch == value)
                 return;
             _caseInsensitiveSearch = value;
             OnPropertyChanged();
@@ -96,7 +90,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _searchInSubdirectories;
         set
         {
-            if (value == _searchInSubdirectories)
+            if (_searchInSubdirectories == value)
                 return;
             _searchInSubdirectories = value;
             OnPropertyChanged();
@@ -108,7 +102,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _pdfDirectories;
         set
         {
-            if (Equals(value, _pdfDirectories))
+            if (Equals(_pdfDirectories, value))
                 return;
             _pdfDirectories = value;
             OnPropertyChanged();
@@ -120,7 +114,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _selectedDirectory;
         set
         {
-            if (value == _selectedDirectory)
+            if (_selectedDirectory == value)
                 return;
             _selectedDirectory = value;
             OnPropertyChanged();
@@ -132,15 +126,15 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         get => _newDirectory;
         set
         {
-            if (value == _newDirectory)
+            if (_newDirectory == value)
                 return;
             _newDirectory = value;
             OnPropertyChanged();
         }
     }
 
-    public RelayCommand<ICloseable> OkCommand { get; }
-    public RelayCommand<ICloseable> CancelCommand { get; }
+    public RelayCommand<ICloseableDialog> OkCommand { get; }
+    public RelayCommand<ICloseableDialog> CancelCommand { get; }
     public ICommand DefaultsCommand { get; }
 
     public bool AddPdfDirectory(string directory)
@@ -178,7 +172,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         OnPropertyChanged(nameof(Preferences));
     }
 
-    private void OkExecute(ICloseable closeable)
+    private void OkExecute(ICloseableDialog closeable)
     {
         // Update the preferences
         _preferences.AllowWildcardSearch = _allowWildcardSearch;
@@ -188,15 +182,16 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         // Save the preferences
         _preferenceService.SetPreference(_preferences);
         _preferenceService.SavePreference<GeneralPreferences>();
+        
         // Close the window
-        closeable.Close();
+        closeable.CloseDialog(true);
     }
 
-    private void CancelExecute(ICloseable closeable)
+    private void CancelExecute(ICloseableDialog closeable)
     {
         // Discard changes
         // Close the window
-        closeable.Close();
+        closeable.CloseDialog(false);
     }
 
     private void DefaultsExecute()

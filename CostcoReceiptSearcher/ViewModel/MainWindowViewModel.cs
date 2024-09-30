@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
-using Ncl.Common.Core.Infrastructure;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
 using Ncl.Common.Wpf.ViewModels;
@@ -32,9 +31,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     private string _searchText = string.Empty;
     private PdfFile? _selectedPdfFile;
 
-    public MainWindowViewModel(IDialogService dialogService,
-        IGenericFactory<IAboutWindowViewModel> aboutWindowVmFactory,
-        IGenericFactory<IPreferencesWindowViewModel> preferenceWindowVmFactory)
+    public MainWindowViewModel(IDialogService dialogService)
     {
         _dialogService = dialogService;
 
@@ -42,16 +39,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         OpenFileCommand = new RelayCommand(OpenFileExecute);
         OpenFolderCommand = new RelayCommand(OpenFolderExecute);
         MenuExitCommand = new RelayCommand(() => Application.Current.Shutdown());
-        MenuPreferencesCommand = new RelayCommand(() =>
-        {
-            var preferencesWindowViewModel = preferenceWindowVmFactory.Create();
-            _dialogService.ShowDialog(preferencesWindowViewModel);
-        });
-        MenuAboutCommand = new RelayCommand(() =>
-        {
-            var aboutWindowViewModel = aboutWindowVmFactory.Create();
-            _dialogService.ShowDialog(aboutWindowViewModel);
-        });
+        MenuPreferencesCommand = new RelayCommand(() => { _dialogService.ShowDialog<IPreferencesWindowViewModel>(); });
+        MenuAboutCommand = new RelayCommand(() => { _dialogService.ShowDialog<IAboutWindowViewModel>(); });
     }
 
     public string SearchText
@@ -118,8 +107,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         string searchText = SearchText;
         if (string.IsNullOrWhiteSpace(searchText))
         {
-            _dialogService.ShowDialog(MessageBoxDialogViewModel.CreateErrorDialog("Please enter a search string.", "Search Error"));
-            return;
+            _dialogService.ShowDialog(
+                MessageBoxDialogViewModel.CreateErrorDialog("Please enter a search string.", "Search Error"));
         }
     }
 
