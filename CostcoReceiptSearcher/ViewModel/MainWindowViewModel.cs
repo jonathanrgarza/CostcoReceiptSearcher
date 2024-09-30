@@ -7,6 +7,7 @@ using CostcoReceiptSearcher.Model;
 using Ncl.Common.Core.Infrastructure;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
+using Ncl.Common.Wpf.ViewModels;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
@@ -117,6 +118,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         string searchText = SearchText;
         if (string.IsNullOrWhiteSpace(searchText))
         {
+            _dialogService.ShowDialog(MessageBoxDialogViewModel.CreateErrorDialog("Please enter a search string.", "Search Error"));
+            return;
         }
     }
 
