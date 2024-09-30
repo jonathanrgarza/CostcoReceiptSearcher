@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
@@ -13,6 +14,7 @@ using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
 using Ncl.Common.Wpf.ViewModels;
 using UglyToad.PdfPig;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
@@ -40,11 +42,13 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     private readonly IPreferenceService _preferenceService;
 
     private GeneralPreferences _generalPreferences;
+    private bool _isSearching;
     private ObservableCollection<PdfFile> _matchingPdfFiles = [];
 
     private string _searchText = string.Empty;
     private PdfFile? _selectedPdfFile;
-    private bool _isSearching;
+
+    private int _totalFilesSearched;
 
     public MainWindowViewModel(IDialogService dialogService, IPreferenceService preferenceService)
     {
@@ -63,9 +67,16 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         MatchingPdfFiles.CollectionChanged += OnMatchingPdfFilesOnCollectionChanged;
     }
 
-    private void OnMatchingPdfFilesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    public int TotalFilesSearched
     {
-        OnPropertyChanged(nameof(MatchCount));
+        get => _totalFilesSearched;
+        set
+        {
+            if (_totalFilesSearched == value) return;
+
+            _totalFilesSearched = value;
+            OnPropertyChanged();
+        }
     }
 
     public string SearchText
@@ -144,6 +155,20 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     public void OnLoaded()
     {
         _generalPreferences = _preferenceService.GetPreference<GeneralPreferences>();
+        _preferenceService.PreferenceChanged += OnPreferenceChanged;
+    }
+
+    private void OnMatchingPdfFilesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(MatchCount));
+    }
+
+    private void OnPreferenceChanged(object? sender, PreferenceChangedEventArgs e)
+    {
+        if (e.Type == typeof(GeneralPreferences))
+        {
+            _generalPreferences = (GeneralPreferences)e.NewValue;
+        }
     }
 
     private async Task SearchExecute()
@@ -174,11 +199,39 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         {
             comparison = StringComparison.OrdinalIgnoreCase;
         }
+
         var directorySearchOption = SearchOption.AllDirectories;
         if (!_generalPreferences.SearchInSubdirectories)
         {
             directorySearchOption = SearchOption.TopDirectoryOnly;
         }
+
+        bool allowWildcardSearch = _generalPreferences.AllowWildcardSearch;
+
+        Regex? regex = null;
+        if (allowWildcardSearch)
+        {
+            // Convert wildcard search text to regex pattern
+            string patternStart = ".*";
+            string patternEnd = ".*";
+            if (searchText.StartsWith('^'))
+            {
+                patternStart = "^";
+            }
+            if (searchText.EndsWith('$'))
+            {
+                patternEnd = "$";
+            }
+
+            string regexPattern = patternStart + Regex.Escape(searchText).Replace("\\*", ".*") + patternEnd;
+            var options = comparison == StringComparison.OrdinalIgnoreCase
+                ? RegexOptions.IgnoreCase
+                : RegexOptions.None;
+            regex = new Regex(regexPattern, options);
+        }
+
+        int totalFilesSearched = 0;
+        TotalFilesSearched = 0;
 
         // Perform the search
         foreach (string pdfDirectory in _generalPreferences.PdfDirectories)
@@ -191,7 +244,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             {
                 // Check if we have already processed this file
                 _pdfFiles.TryGetValue(pdfFilePath, out var pdfFile);
-                
+
                 if (pdfFile == null)
                 {
                     // Would do if statement on TryGetValue but VS doesn't see it as a null check
@@ -208,13 +261,22 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
                 }
 
                 // Search the PDF file
-                if (pdfFile.Lines != null &&
-                    pdfFile.Lines.Any(line => line.Contains(searchText, comparison)))
+                if (PdfContainsSearchText(pdfFile, searchText, comparison, regex))
                 {
-                    Application.Current.Dispatcher.Invoke(() => MatchingPdfFiles.Add(pdfFile));
+                    int searched = totalFilesSearched;
+                    Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        MatchingPdfFiles.Add(pdfFile);
+                        // Update the total files searched to show progress
+                        TotalFilesSearched = searched;
+                    });
                 }
+
+                totalFilesSearched++;
             }
         }
+
+        TotalFilesSearched = totalFilesSearched;
     }
 
     private static byte[] GetFileHash(PdfFile pdfFile)
@@ -250,12 +312,26 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         {
             var page = document.GetPage(i);
 
-            string text = page.Text;
-            lines.AddRange(text.Split(Environment.NewLine));
+            //string text = page.Text;
+            string text = ContentOrderTextExtractor.GetText(page, true);
+            lines.AddRange(text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
         }
 
         pdfFile.Lines = lines.ToArray();
         pdfFile.FileHash = GetFileHash(pdfFile);
+    }
+
+    private static bool PdfContainsSearchText(PdfFile pdfFile, string searchText, StringComparison comparison,
+        Regex? regex)
+    {
+        if (pdfFile.Lines == null)
+        {
+            return false;
+        }
+
+        return regex == null
+            ? pdfFile.Lines.Any(line => line.Contains(searchText, comparison))
+            : pdfFile.Lines.Any(regex.IsMatch);
     }
 
     private void OpenFileExecute()
