@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
-using CostcoReceiptSearcher.View;
 using Ncl.Common.Core.Infrastructure;
 using Ncl.Common.Core.UI;
+using Ncl.Common.Wpf.Infrastructure;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
@@ -25,27 +25,31 @@ public interface IMainWindowViewModel : INotifyPropertyChanged
 
 public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
+    private readonly IDialogService _dialogService;
     private ObservableCollection<PdfFile> _matchingPdfFiles = [];
 
     private string _searchText = string.Empty;
     private PdfFile? _selectedPdfFile;
 
-    public MainWindowViewModel(IGenericFactory<PreferencesWindow> preferenceWindowFactory,
-        IGenericFactory<AboutWindow> aboutWindowFactory)
+    public MainWindowViewModel(IDialogService dialogService,
+        IGenericFactory<IAboutWindowViewModel> aboutWindowVmFactory,
+        IGenericFactory<IPreferencesWindowViewModel> preferenceWindowVmFactory)
     {
+        _dialogService = dialogService;
+
         SearchCommand = new RelayCommandAsync(SearchExecute);
         OpenFileCommand = new RelayCommand(OpenFileExecute);
         OpenFolderCommand = new RelayCommand(OpenFolderExecute);
         MenuExitCommand = new RelayCommand(() => Application.Current.Shutdown());
         MenuPreferencesCommand = new RelayCommand(() =>
         {
-            var preferenceWindow = preferenceWindowFactory.Create();
-            preferenceWindow.ShowDialog();
+            var preferencesWindowViewModel = preferenceWindowVmFactory.Create();
+            _dialogService.ShowDialog(preferencesWindowViewModel);
         });
         MenuAboutCommand = new RelayCommand(() =>
         {
-            var aboutWindow = aboutWindowFactory.Create();
-            aboutWindow.ShowDialog();
+            var aboutWindowViewModel = aboutWindowVmFactory.Create();
+            _dialogService.ShowDialog(aboutWindowViewModel);
         });
     }
 
@@ -55,7 +59,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         set
         {
             if (Equals(value, _searchText))
+            {
                 return;
+            }
+
             _searchText = value;
             OnPropertyChanged();
         }
@@ -67,7 +74,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         set
         {
             if (Equals(value, _matchingPdfFiles))
+            {
                 return;
+            }
+
             _matchingPdfFiles = value;
             OnPropertyChanged();
         }
@@ -79,7 +89,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         set
         {
             if (Equals(value, _selectedPdfFile))
+            {
                 return;
+            }
+
             _selectedPdfFile = value;
             OnPropertyChanged();
         }
@@ -103,20 +116,27 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         // Add the matching files to the PdfFiles collection
         string searchText = SearchText;
         if (string.IsNullOrWhiteSpace(searchText))
-            return;
+        {
+        }
     }
 
     private void OpenFileExecute()
     {
         if (_selectedPdfFile == null)
+        {
             return;
+        }
+
         Process.Start(new ProcessStartInfo(_selectedPdfFile.FilePath) { UseShellExecute = true });
     }
 
     private void OpenFolderExecute()
     {
         if (_selectedPdfFile == null)
+        {
             return;
+        }
+
         string argument = "/select, \"" + _selectedPdfFile.FilePath + "\"";
         Process.Start("explorer.exe", argument);
     }
