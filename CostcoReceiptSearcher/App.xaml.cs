@@ -16,13 +16,24 @@ namespace CostcoReceiptSearcher;
 /// </summary>
 public partial class App
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="App"/> class.
+    /// </summary>
     public App()
     {
         AppHost = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build();
     }
 
+    /// <summary>
+    /// Gets the application host.
+    /// </summary>
     public static IHost? AppHost { get; private set; }
 
+    /// <summary>
+    /// Configures the services for the application.
+    /// </summary>
+    /// <param name="hostContext">The host builder context.</param>
+    /// <param name="services">The service collection.</param>
     private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
     {
         // Add preferences service
@@ -47,6 +58,10 @@ public partial class App
         services.AddSingleton<MainWindow>();
     }
 
+    /// <summary>
+    /// Handles the startup event of the application.
+    /// </summary>
+    /// <param name="e">The startup event arguments.</param>
     protected override async void OnStartup(StartupEventArgs e)
     {
         await AppHost!.StartAsync();
@@ -68,12 +83,21 @@ public partial class App
         base.OnStartup(e);
     }
 
+    /// <summary>
+    /// Handles the exit event of the application.
+    /// </summary>
+    /// <param name="e">The exit event arguments.</param>
     protected override async void OnExit(ExitEventArgs e)
     {
         await AppHost!.StopAsync();
         base.OnExit(e);
     }
 
+    /// <summary>
+    /// Sets up the window manager registrations.
+    /// </summary>
+    /// <param name="services">The service provider.</param>
+    /// <returns>The window manager instance.</returns>
     private static IWindowManager SetupWindowManagerRegistrations(IServiceProvider services)
     {
         var windowManager = services.GetRequiredService<IWindowManager>();
@@ -83,6 +107,10 @@ public partial class App
         return windowManager;
     }
 
+    /// <summary>
+    /// Sets up the dialog manager registrations.
+    /// </summary>
+    /// <param name="services">The service provider.</param>
     private static void SetupDialogManagerRegistrations(IServiceProvider services)
     {
         var dialogService = (DialogService)services.GetRequiredService<IDialogService>();
@@ -93,7 +121,11 @@ public partial class App
             .GetRequiredService<IWindowFactory<PreferencesWindow>>());
     }
 
-    private void SetupPreferenceService(IServiceProvider services)
+    /// <summary>
+    /// Sets up the preference service.
+    /// </summary>
+    /// <param name="services">The service provider.</param>
+    private static void SetupPreferenceService(IServiceProvider services)
     {
         var preferenceService = services.GetRequiredService<ICustomizablePreferenceService>();
 

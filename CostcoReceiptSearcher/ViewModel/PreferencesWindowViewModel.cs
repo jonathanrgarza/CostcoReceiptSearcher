@@ -322,7 +322,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         closeable.CloseDialog(true);
     }
 
-    private void CancelExecute(ICloseableDialog closeable)
+    private static void CancelExecute(ICloseableDialog closeable)
     {
         // Discard changes
         // Close the window

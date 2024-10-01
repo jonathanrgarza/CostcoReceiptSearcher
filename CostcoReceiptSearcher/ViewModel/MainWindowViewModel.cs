@@ -35,21 +35,61 @@ public interface IMainWindowViewModel : INotifyPropertyChanged
     void OnLoaded();
 }
 
+/// <summary>
+/// Represents the view model for the main window of the application.
+/// </summary>
 public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
+    /// <summary>
+    /// The dialog service used for displaying dialogs.
+    /// </summary>
     private readonly IDialogService _dialogService;
+
+    /// <summary>
+    /// The dictionary that stores the PDF files and their corresponding file path.
+    /// </summary>
     private readonly Dictionary<string, PdfFile?> _pdfFiles = new();
+
+    /// <summary>
+    /// The preference service used for managing application preferences.
+    /// </summary>
     private readonly IPreferenceService _preferenceService;
 
+    /// <summary>
+    /// The general preferences of the application.
+    /// </summary>
     private GeneralPreferences _generalPreferences;
+
+    /// <summary>
+    /// Indicates whether the application is currently searching for matching PDF files.
+    /// </summary>
     private bool _isSearching;
+
+    /// <summary>
+    /// The collection of PDF files that match the search criteria.
+    /// </summary>
     private ObservableCollection<PdfFile> _matchingPdfFiles = [];
 
+    /// <summary>
+    /// The text used for searching within the PDF files.
+    /// </summary>
     private string _searchText = string.Empty;
+
+    /// <summary>
+    /// The currently selected PDF file.
+    /// </summary>
     private PdfFile? _selectedPdfFile;
 
+    /// <summary>
+    /// The total number of files searched during the search operation.
+    /// </summary>
     private int _totalFilesSearched;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
+    /// </summary>
+    /// <param name="dialogService">The dialog service used for displaying dialogs.</param>
+    /// <param name="preferenceService">The preference service used for managing application preferences.</param>
     public MainWindowViewModel(IDialogService dialogService, IPreferenceService preferenceService)
     {
         _dialogService = dialogService;
@@ -67,6 +107,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         MatchingPdfFiles.CollectionChanged += OnMatchingPdfFilesOnCollectionChanged;
     }
 
+    /// <summary>
+    /// Gets or sets the total number of files searched during the search operation.
+    /// </summary>
     public int TotalFilesSearched
     {
         get => _totalFilesSearched;
@@ -79,6 +122,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the text used for searching within the PDF files.
+    /// </summary>
     public string SearchText
     {
         get => _searchText;
@@ -94,6 +140,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets the collection of PDF files that match the search criteria.
+    /// </summary>
     public ObservableCollection<PdfFile> MatchingPdfFiles
     {
         get => _matchingPdfFiles;
@@ -110,8 +159,14 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
     }
 
+    /// <summary>
+    /// Gets the number of PDF files that match the search criteria.
+    /// </summary>
     public int MatchCount => MatchingPdfFiles.Count;
 
+    /// <summary>
+    /// Gets or sets the currently selected PDF file.
+    /// </summary>
     public PdfFile? SelectedPdfFile
     {
         get => _selectedPdfFile;
@@ -127,42 +182,74 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the application is currently searching for matching PDF files.
+    /// </summary>
     public bool IsSearching
     {
         get => _isSearching;
         set
         {
-            if (_isSearching != value)
-            {
-                _isSearching = value;
-                OnPropertyChanged();
-            }
+            if (_isSearching == value) return;
+            _isSearching = value;
+            OnPropertyChanged();
         }
     }
 
+    /// <summary>
+    /// Gets the command for exiting the application.
+    /// </summary>
     public ICommand MenuExitCommand { get; }
 
+    /// <summary>
+    /// Gets the command for opening the preferences window.
+    /// </summary>
     public ICommand MenuPreferencesCommand { get; }
 
+    /// <summary>
+    /// Gets the command for opening the about window.
+    /// </summary>
     public ICommand MenuAboutCommand { get; }
 
+    /// <summary>
+    /// Gets the command for executing the search operation.
+    /// </summary>
     public ICommand SearchCommand { get; }
 
+    /// <summary>
+    /// Gets the command for opening a PDF file.
+    /// </summary>
     public ICommand OpenFileCommand { get; }
 
+    /// <summary>
+    /// Gets the command for opening the folder containing a PDF file.
+    /// </summary>
     public ICommand OpenFolderCommand { get; }
 
+    /// <summary>
+    /// Performs initialization tasks when the main window is loaded.
+    /// </summary>
     public void OnLoaded()
     {
         _generalPreferences = _preferenceService.GetPreference<GeneralPreferences>();
         _preferenceService.PreferenceChanged += OnPreferenceChanged;
     }
 
+    /// <summary>
+    /// Handles the collection changed event of the matching PDF files.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="args">The event arguments.</param>
     private void OnMatchingPdfFilesOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
     {
         OnPropertyChanged(nameof(MatchCount));
     }
 
+    /// <summary>
+    /// Handles the preference changed event.
+    /// </summary>
+    /// <param name="sender">The sender of the event.</param>
+    /// <param name="e">The event arguments.</param>
     private void OnPreferenceChanged(object? sender, PreferenceChangedEventArgs e)
     {
         if (e.Type == typeof(GeneralPreferences))
@@ -171,6 +258,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
     }
 
+    /// <summary>
+    /// Executes the search operation asynchronously.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task SearchExecute()
     {
         // Implement the logic to search for the text string within the PDF files
@@ -191,6 +282,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         IsSearching = false;
     }
 
+    /// <summary>
+    /// Processes the PDF files and searches for the specified text.
+    /// </summary>
     private void ProcessPdfFiles()
     {
         string searchText = SearchText;
@@ -279,6 +373,11 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         TotalFilesSearched = totalFilesSearched;
     }
 
+    /// <summary>
+    /// Gets the hash of the specified PDF file.
+    /// </summary>
+    /// <param name="pdfFile">The PDF file.</param>
+    /// <returns>The hash of the PDF file.</returns>
     private static byte[] GetFileHash(PdfFile pdfFile)
     {
         // Implement the logic to get the hash of the PDF file
@@ -294,6 +393,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         return hash;
     }
 
+    /// <summary>
+    /// Reads the specified PDF file and extracts the lines of text.
+    /// </summary>
+    /// <param name="pdfFile">The PDF file.</param>
     private static void ReadPdfFile(PdfFile pdfFile)
     {
         // Implement the logic to read the PDF file and return the lines
@@ -321,6 +424,14 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         pdfFile.FileHash = GetFileHash(pdfFile);
     }
 
+    /// <summary>
+    /// Checks if the specified PDF file contains the search text.
+    /// </summary>
+    /// <param name="pdfFile">The PDF file.</param>
+    /// <param name="searchText">The search text.</param>
+    /// <param name="comparison">The string comparison method.</param>
+    /// <param name="regex">The regular expression for wildcard search.</param>
+    /// <returns><c>true</c> if the PDF file contains the search text; otherwise, <c>false</c>.</returns>
     private static bool PdfContainsSearchText(PdfFile pdfFile, string searchText, StringComparison comparison,
         Regex? regex)
     {
@@ -334,6 +445,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             : pdfFile.Lines.Any(regex.IsMatch);
     }
 
+    /// <summary>
+    /// Opens the currently selected PDF file.
+    /// </summary>
     private void OpenFileExecute()
     {
         if (_selectedPdfFile == null)
@@ -344,6 +458,9 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         Process.Start(new ProcessStartInfo(_selectedPdfFile.FilePath) { UseShellExecute = true });
     }
 
+    /// <summary>
+    /// Opens the folder containing the currently selected PDF file.
+    /// </summary>
     private void OpenFolderExecute()
     {
         if (_selectedPdfFile == null)

@@ -14,6 +14,7 @@ public partial class PreferencesWindow : ICloseableDialog
     /// <summary>
     /// Initializes a new instance of the <see cref="PreferencesWindow"/> class.
     /// </summary>
+    /// <param name="viewModel">The view model for the preferences window.</param>
     public PreferencesWindow(IPreferencesWindowViewModel viewModel)
     {
         InitializeComponent();
@@ -47,6 +48,11 @@ public partial class PreferencesWindow : ICloseableDialog
         }
     }
 
+    /// <summary>
+    /// Handles the click event when the "Add PDF Directory" button is clicked.
+    /// </summary>
+    /// <param name="sender">The object that raised the event.</param>
+    /// <param name="e">The event arguments.</param>
     private void AddPdfDirectoryClicked(object? sender, RoutedEventArgs e)
     {
         string newDirectory = ViewModel.NewDirectory;
@@ -87,6 +93,11 @@ public partial class PreferencesWindow : ICloseableDialog
         }
     }
 
+    /// <summary>
+    /// Handles the click event when the "Remove PDF Directory" button is clicked.
+    /// </summary>
+    /// <param name="sender">The object that raised the event.</param>
+    /// <param name="e">The event arguments.</param>
     private void RemovePdfDirectoryClicked(object? sender, RoutedEventArgs e)
     {
         string folderName = ViewModel.SelectedDirectory;

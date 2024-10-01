@@ -11,7 +11,7 @@
     Title="Preferences" Height="250" Width="400" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Margin" Value="0,0,10,0" />
             <Setter Property="Padding" Value="5" />
         </Style>
         <converters:NonEmptyStringToBoolConverter x:Key="NonEmptyStringToBoolConverter" />
@@ -30,7 +30,7 @@
             <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding CaseInsensitiveSearch}" />
             <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding SearchInSubdirectories}" />
             <Label Grid.Row="3" Content="PDF Source Directories" Target="PdfDirectories" />
-            <ListBox 
+            <ListBox
                 Grid.Row="4"
                 x:Name="PdfDirectories"
                 MinHeight="25"
@@ -43,8 +43,9 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Grid.Column="0" Text="{Binding NewDirectory}" />
-                <Button Grid.Column="1" Content="Add" Style="{StaticResource ButtonStyle}" Click="AddPdfDirectoryClicked" />
-                <Button 
+                <Button Grid.Column="1" Content="Add" Style="{StaticResource ButtonStyle}"
+                        Click="AddPdfDirectoryClicked" />
+                <Button
                     Grid.Column="2"
                     Content="Remove" Style="{StaticResource ButtonStyle}"
                     IsEnabled="{Binding SelectedDirectory, Converter={StaticResource NonEmptyStringToBoolConverter}}"
