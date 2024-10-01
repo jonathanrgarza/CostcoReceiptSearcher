@@ -18,20 +18,74 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
+/// <summary>
+/// Represents interface for the view model for the main window of the application.
+/// </summary>
 public interface IMainWindowViewModel : INotifyPropertyChanged
 {
+    /// <summary>
+    /// Gets or sets the total number of files searched during the search operation.
+    /// </summary>
+    int TotalFilesSearched { get; set; }
+
+    /// <summary>
+    /// Gets or sets the text used for searching within the PDF files.
+    /// </summary>
     string SearchText { get; set; }
+
+    /// <summary>
+    /// Gets or sets the collection of PDF files that match the search criteria.
+    /// </summary>
     ObservableCollection<PdfFile> MatchingPdfFiles { get; set; }
+
+    /// <summary>
+    /// Gets the number of PDF files that match the search criteria.
+    /// </summary>
     int MatchCount { get; }
-    public bool IsSearching { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the application is currently searching for matching PDF files.
+    /// </summary>
+    bool IsSearching { get; }
+
+    /// <summary>
+    /// Gets or sets the currently selected PDF file.
+    /// </summary>
     PdfFile? SelectedPdfFile { get; set; }
+
+    /// <summary>
+    /// Gets the command for exiting the application.
+    /// </summary>
     ICommand MenuExitCommand { get; }
+
+    /// <summary>
+    /// Gets the command for opening the preferences window.
+    /// </summary>
     ICommand MenuPreferencesCommand { get; }
+
+    /// <summary>
+    /// Gets the command for opening the about window.
+    /// </summary>
     ICommand MenuAboutCommand { get; }
+
+    /// <summary>
+    /// Gets the command for executing the search operation.
+    /// </summary>
     ICommand SearchCommand { get; }
+
+    /// <summary>
+    /// Gets the command for opening a PDF file.
+    /// </summary>
     ICommand OpenFileCommand { get; }
+
+    /// <summary>
+    /// Gets the command for opening the folder containing a PDF file.
+    /// </summary>
     ICommand OpenFolderCommand { get; }
 
+    /// <summary>
+    /// Performs initialization tasks when the main window is loaded.
+    /// </summary>
     void OnLoaded();
 }
 
@@ -172,10 +226,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         get => _selectedPdfFile;
         set
         {
-            if (Equals(value, _selectedPdfFile))
-            {
-                return;
-            }
+            if (Equals(value, _selectedPdfFile)) return;
 
             _selectedPdfFile = value;
             OnPropertyChanged();
@@ -312,6 +363,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             {
                 patternStart = "^";
             }
+
             if (searchText.EndsWith('$'))
             {
                 patternEnd = "$";
