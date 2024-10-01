@@ -7,7 +7,9 @@
     mc:Ignorable="d"
     xmlns:designData="clr-namespace:CostcoReceiptSearcher.ViewModel.DesignData"
     d:DataContext="{d:DesignInstance designData:DesignDataAboutWindowViewModel, IsDesignTimeCreatable=True}"
-    Title="About" Height="200" Width="400" WindowStartupLocation="CenterOwner">
+    Title="About" Width="400"
+    Height="200" MinWidth="300" MinHeight="200"
+    WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="3" />

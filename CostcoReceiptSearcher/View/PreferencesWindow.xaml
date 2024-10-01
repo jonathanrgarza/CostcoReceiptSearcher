@@ -8,7 +8,9 @@
     xmlns:designData="clr-namespace:CostcoReceiptSearcher.ViewModel.DesignData"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance designData:DesignDataPreferencesWindowViewModel, IsDesignTimeCreatable=True}"
-    Title="Preferences" Height="250" Width="400" WindowStartupLocation="CenterOwner">
+    Title="Preferences"
+    Width="400" Height="250" MinWidth="300" MinHeight="250"
+    WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="0,0,10,0" />

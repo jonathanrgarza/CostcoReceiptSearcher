@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:model="clr-namespace:CostcoReceiptSearcher.Model"
     mc:Ignorable="d"
-    Title="Costco Receipt Searcher" Height="450" Width="800">
+    Title="Costco Receipt Searcher" Width="800" Height="450" MinWidth="375" MinHeight="250">
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
