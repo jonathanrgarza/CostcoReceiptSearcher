@@ -27,18 +27,20 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding AllowWildcardSearch}" />
             <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding CaseInsensitiveSearch}" />
             <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding SearchInSubdirectories}" />
-            <Label Grid.Row="3" Content="PDF Source Directories" Target="PdfDirectories" />
+            <CheckBox Grid.Row="3" Content="Enable Caching" IsChecked="{Binding EnableCaching}" />
+            <Label Grid.Row="4" Content="PDF Source Directories" Target="PdfDirectories" />
             <ListBox
-                Grid.Row="4"
+                Grid.Row="5"
                 x:Name="PdfDirectories"
                 MinHeight="25"
                 ItemsSource="{Binding PdfDirectories}"
                 SelectedItem="{Binding SelectedDirectory}" />
-            <Grid Grid.Row="5">
+            <Grid Grid.Row="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />

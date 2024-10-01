@@ -34,6 +34,11 @@ public interface IPreferencesWindowViewModel : INotifyPropertyChanged
     bool SearchInSubdirectories { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether to enable caching.
+    /// </summary>
+    bool EnableCaching { get; set; }
+
+    /// <summary>
     /// Gets or sets the collection of PDF directories.
     /// </summary>
     ObservableCollection<string> PdfDirectories { get; set; }
@@ -91,6 +96,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     private readonly IPreferenceService _preferenceService;
     private bool _allowWildcardSearch;
     private bool _caseInsensitiveSearch;
+    private bool _enableCaching;
     private string _newDirectory;
     private ObservableCollection<string> _pdfDirectories;
     private GeneralPreferences _preferences;
@@ -181,6 +187,20 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
             }
 
             _searchInSubdirectories = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to enable caching.
+    /// </summary>
+    public bool EnableCaching
+    {
+        get => _enableCaching;
+        set
+        {
+            if (value == _enableCaching) return;
+            _enableCaching = value;
             OnPropertyChanged();
         }
     }
@@ -301,6 +321,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         AllowWildcardSearch = _preferences.AllowWildcardSearch;
         CaseInsensitiveSearch = _preferences.CaseInsensitiveSearch;
         SearchInSubdirectories = _preferences.SearchInSubdirectories;
+        EnableCaching = _preferences.EnableCaching;
         PdfDirectories.Clear();
         PdfDirectories = new ObservableCollection<string>(_preferences.PdfDirectories);
         SelectedDirectory = string.Empty;
@@ -313,6 +334,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         _preferences.AllowWildcardSearch = _allowWildcardSearch;
         _preferences.CaseInsensitiveSearch = _caseInsensitiveSearch;
         _preferences.SearchInSubdirectories = _searchInSubdirectories;
+        _preferences.EnableCaching = _enableCaching;
         _preferences.PdfDirectories = _pdfDirectories.ToList();
         // Save the preferences
         _preferenceService.SetPreference(_preferences);
@@ -337,6 +359,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         {
             return;
         }
+
         LoadPreferences(preferences);
     }
 }

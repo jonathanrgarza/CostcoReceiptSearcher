@@ -12,83 +12,56 @@ namespace CostcoReceiptSearcher.ViewModel.DesignData;
 /// </summary>
 internal class DesignDataPreferencesWindowViewModel : IPreferencesWindowViewModel
 {
-    /// <summary>
-    /// Gets or sets the general preferences.
-    /// </summary>
+    /// <inheritdoc/>
     public GeneralPreferences Preferences { get; set; } = new();
 
-    /// <summary>
-    /// Gets or sets a value indicating whether wildcard search is allowed.
-    /// </summary>
+    /// <inheritdoc/>
     public bool AllowWildcardSearch { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the search is case-insensitive.
-    /// </summary>
+    /// <inheritdoc/>
     public bool CaseInsensitiveSearch { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the search should be performed in subdirectories.
-    /// </summary>
+    /// <inheritdoc/>
     public bool SearchInSubdirectories { get; set; }
 
-    /// <summary>
-    /// Gets or sets the collection of PDF directories.
-    /// </summary>
+    /// <inheritdoc/>
+    public bool EnableCaching { get; set; }
+
+    /// <inheritdoc/>
     public ObservableCollection<string> PdfDirectories { get; set; } =
     [
         "C:\\PDFs",
         "D:\\Other_PDFs"
     ];
 
-    /// <summary>
-    /// Gets or sets the selected directory.
-    /// </summary>
+    /// <inheritdoc/>
     public string SelectedDirectory { get; set; } = "C:\\PDF";
 
-    /// <summary>
-    /// Gets or sets the new directory.
-    /// </summary>
+    /// <inheritdoc/>
     public string NewDirectory { get; set; } = "E:\\PDFs";
 
-    /// <summary>
-    /// Gets the command for the OK button.
-    /// </summary>
+    /// <inheritdoc/>
     public RelayCommand<ICloseableDialog> OkCommand { get; } = new(_ => { });
 
-    /// <summary>
-    /// Gets the command for the Cancel button.
-    /// </summary>
+    /// <inheritdoc/>
     public RelayCommand<ICloseableDialog> CancelCommand { get; } = new(_ => { });
 
-    /// <summary>
-    /// Gets the command for the Defaults button.
-    /// </summary>
+    /// <inheritdoc/>
     public ICommand DefaultsCommand { get; } = new RelayCommand(() => { });
 
-    /// <summary>
-    /// Adds a PDF directory to the collection.
-    /// </summary>
-    /// <param name="directory">The directory to add.</param>
-    /// <returns><c>true</c> if the directory was added successfully; otherwise, <c>false</c>.</returns>
+    /// <inheritdoc/>
     public bool AddPdfDirectory(string directory)
     {
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Removes a PDF directory from the collection.
-    /// </summary>
-    /// <param name="directory">The directory to remove.</param>
-    /// <returns><c>true</c> if the directory was removed successfully; otherwise, <c>false</c>.</returns>
+    /// <inheritdoc/>
     public bool RemovePdfDirectory(string directory)
     {
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Loads the preferences.
-    /// </summary>
+    /// <inheritdoc/>
     public void LoadPreferences()
     {
         throw new NotImplementedException();

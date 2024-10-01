@@ -9,30 +9,20 @@ namespace CostcoReceiptSearcher.ViewModel.DesignData;
 /// </summary>
 public class DesignDataAboutWindowViewModel : IAboutWindowViewModel
 {
-    /// <summary>
-    /// Gets the title of the application.
-    /// </summary>
+    /// <inheritdoc/>
     public string Title => "Costco Receipt Searcher";
 
-    /// <summary>
-    /// Gets the version of the application.
-    /// </summary>
+    /// <inheritdoc/>
     public string Version => "1.0";
 
-    /// <summary>
-    /// Gets the description of the application.
-    /// </summary>
+    /// <inheritdoc/>
     public string Description =>
         "This application allows you to search through Costco receipts to find the items you purchased.";
 
-    /// <summary>
-    /// Gets the author of the application.
-    /// </summary>
+    /// <inheritdoc/>
     public string Author => "Jonathan";
 
-    /// <summary>
-    /// Gets the command for the OK button.
-    /// </summary>
+    /// <inheritdoc/>
     public ICommand OkCommand => new RelayCommand(() => { });
 
     /// <inheritdoc/>

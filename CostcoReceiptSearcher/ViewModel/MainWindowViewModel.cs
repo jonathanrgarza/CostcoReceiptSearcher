@@ -303,9 +303,19 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     /// <param name="e">The event arguments.</param>
     private void OnPreferenceChanged(object? sender, PreferenceChangedEventArgs e)
     {
-        if (e.Type == typeof(GeneralPreferences))
+        if (e.Type != typeof(GeneralPreferences)) return;
+
+        var newPreferences = (GeneralPreferences)e.NewValue;
+        _generalPreferences = newPreferences;
+
+        // Check if the caching preference has changed
+        if (newPreferences.EnableCaching == ((GeneralPreferences)e.OldValue).EnableCaching) return;
+
+        foreach (var pdfFile in _pdfFiles)
         {
-            _generalPreferences = (GeneralPreferences)e.NewValue;
+            if (pdfFile.Value == null) continue;
+            pdfFile.Value.Lines = null;
+            pdfFile.Value.FileHash = [];
         }
     }
 
@@ -352,6 +362,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         }
 
         bool allowWildcardSearch = _generalPreferences.AllowWildcardSearch;
+        bool enableCaching = _generalPreferences.EnableCaching;
 
         Regex? regex = null;
         if (allowWildcardSearch)
@@ -399,15 +410,15 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
                 }
 
                 // Read PDF file if the hash is empty or different
+                string[]? lines = pdfFile.Lines;
                 byte[] fileHash = GetFileHash(pdfFile);
-                // Debugging: Print the hashes
-                if (pdfFile.FileHash.Length == 0 || !pdfFile.FileHash.SequenceEqual(fileHash))
+                if (!enableCaching || pdfFile.FileHash.Length == 0 || !pdfFile.FileHash.SequenceEqual(fileHash))
                 {
-                    ReadPdfFile(pdfFile);
+                    lines = ReadPdfFile(pdfFile, enableCaching);
                 }
 
                 // Search the PDF file
-                if (PdfContainsSearchText(pdfFile, searchText, comparison, regex))
+                if (PdfContainsSearchText(lines, searchText, comparison, regex))
                 {
                     int searched = totalFilesSearched;
                     Application.Current.Dispatcher.BeginInvoke(() =>
@@ -449,12 +460,14 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     /// Reads the specified PDF file and extracts the lines of text.
     /// </summary>
     /// <param name="pdfFile">The PDF file.</param>
-    private static void ReadPdfFile(PdfFile pdfFile)
+    /// <param name="enableCaching">Should the PDF content be cached.</param>
+    /// <returns>The PDF content split into lines.</returns>
+    private static string[] ReadPdfFile(PdfFile pdfFile, bool enableCaching)
     {
         // Implement the logic to read the PDF file and return the lines
         if (!File.Exists(pdfFile.FilePath))
         {
-            return;
+            return [];
         }
 
         // Read the PDF file
@@ -472,29 +485,31 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             lines.AddRange(text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries));
         }
 
-        pdfFile.Lines = lines.ToArray();
+        string[] lineArray = lines.ToArray();
+        if (!enableCaching) return lineArray;
+
+        pdfFile.Lines = lineArray;
         pdfFile.FileHash = GetFileHash(pdfFile);
+
+        return lineArray;
     }
 
     /// <summary>
-    /// Checks if the specified PDF file contains the search text.
+    /// Checks if the specified PDF lines contains the search text.
     /// </summary>
-    /// <param name="pdfFile">The PDF file.</param>
+    /// <param name="lines">The lines of a PDF file.</param>
     /// <param name="searchText">The search text.</param>
     /// <param name="comparison">The string comparison method.</param>
     /// <param name="regex">The regular expression for wildcard search.</param>
-    /// <returns><c>true</c> if the PDF file contains the search text; otherwise, <c>false</c>.</returns>
-    private static bool PdfContainsSearchText(PdfFile pdfFile, string searchText, StringComparison comparison,
+    /// <returns><c>true</c> if the PDF lines contains the search text; otherwise, <c>false</c>.</returns>
+    private static bool PdfContainsSearchText(string[]? lines, string searchText, StringComparison comparison,
         Regex? regex)
     {
-        if (pdfFile.Lines == null)
-        {
-            return false;
-        }
+        if (lines == null) return false;
 
         return regex == null
-            ? pdfFile.Lines.Any(line => line.Contains(searchText, comparison))
-            : pdfFile.Lines.Any(regex.IsMatch);
+            ? lines.Any(line => line.Contains(searchText, comparison))
+            : lines.Any(regex.IsMatch);
     }
 
     /// <summary>
