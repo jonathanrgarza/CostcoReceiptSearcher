@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using CostcoReceiptSearcher.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using Ncl.Common.Wpf.Infrastructure;
 

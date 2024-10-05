@@ -96,6 +96,8 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     private readonly IPreferenceService _preferenceService;
     private bool _allowWildcardSearch;
     private bool _caseInsensitiveSearch;
+
+    private bool _copyOnOpenFile;
     private bool _enableCaching;
     private string _newDirectory;
     private ObservableCollection<string> _pdfDirectories;
@@ -118,6 +120,20 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         OkCommand = new RelayCommand<ICloseableDialog>(OkExecute);
         CancelCommand = new RelayCommand<ICloseableDialog>(CancelExecute);
         DefaultsCommand = new RelayCommand(DefaultsExecute);
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to copy search text to clipboard on open of file.
+    /// </summary>
+    public bool CopyOnOpenFile
+    {
+        get => _copyOnOpenFile;
+        set
+        {
+            if (value == _copyOnOpenFile) return;
+            _copyOnOpenFile = value;
+            OnPropertyChanged();
+        }
     }
 
     /// <summary>
@@ -322,6 +338,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         CaseInsensitiveSearch = _preferences.CaseInsensitiveSearch;
         SearchInSubdirectories = _preferences.SearchInSubdirectories;
         EnableCaching = _preferences.EnableCaching;
+        CopyOnOpenFile = _preferences.CopyOnOpenFile;
         PdfDirectories.Clear();
         PdfDirectories = new ObservableCollection<string>(_preferences.PdfDirectories);
         SelectedDirectory = string.Empty;
@@ -335,6 +352,7 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         _preferences.CaseInsensitiveSearch = _caseInsensitiveSearch;
         _preferences.SearchInSubdirectories = _searchInSubdirectories;
         _preferences.EnableCaching = _enableCaching;
+        _preferences.CopyOnOpenFile = _copyOnOpenFile;
         _preferences.PdfDirectories = _pdfDirectories.ToList();
         // Save the preferences
         _preferenceService.SetPreference(_preferences);

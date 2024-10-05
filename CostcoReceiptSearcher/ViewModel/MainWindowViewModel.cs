@@ -522,8 +522,29 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             return;
         }
 
+        if (_generalPreferences.CopyOnOpenFile)
+        {
+            try
+            {
+                if (!Clipboard.ContainsText(TextDataFormat.UnicodeText) ||
+                    Clipboard.GetText(TextDataFormat.UnicodeText) != _searchText)
+                {
+                    Clipboard.SetText(_searchText, TextDataFormat.UnicodeText);
+                }
+            }
+            catch (System.Runtime.InteropServices.ExternalException ex)
+            {
+                Console.WriteLine($"An error occurred while accessing the Clipboard: {ex.Message}");
+            }
+            catch (ThreadStateException ex)
+            {
+                Console.WriteLine($"An error occurred due to thread state: {ex.Message}");
+            }
+        }
+
         Process.Start(new ProcessStartInfo(_selectedPdfFile.FilePath) { UseShellExecute = true });
     }
+
 
     /// <summary>
     /// Opens the folder containing the currently selected PDF file.

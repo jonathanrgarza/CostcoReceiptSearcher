@@ -15,6 +15,8 @@ internal class DesignDataPreferencesWindowViewModel : IPreferencesWindowViewMode
     /// <inheritdoc/>
     public GeneralPreferences Preferences { get; set; } = new();
 
+    public bool CopyOnOpenFile { get; set; } = true;
+
     /// <inheritdoc/>
     public bool AllowWildcardSearch { get; set; }
 

@@ -66,6 +66,11 @@ public class GeneralPreferences : IPreference
     public bool EnableCaching { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether to copy search text to clipboard on open of file.
+    /// </summary>
+    public bool CopyOnOpenFile { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the directories to search for PDF files.
     /// </summary>
     public List<string> PdfDirectories { get; set; } = [];
