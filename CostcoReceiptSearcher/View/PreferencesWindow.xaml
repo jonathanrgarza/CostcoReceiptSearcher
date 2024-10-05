@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance designData:DesignDataPreferencesWindowViewModel, IsDesignTimeCreatable=True}"
     Title="Preferences"
-    Width="400" Height="250" MinWidth="300" MinHeight="250"
+    Width="400" Height="300" MinWidth="300" MinHeight="300"
     WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
@@ -18,47 +18,46 @@
         </Style>
         <converters:NonEmptyStringToBoolConverter x:Key="NonEmptyStringToBoolConverter" />
     </Window.Resources>
-    <DockPanel LastChildFill="False">
-        <Grid DockPanel.Dock="Top" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding AllowWildcardSearch}" />
-            <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding CaseInsensitiveSearch}" />
-            <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding SearchInSubdirectories}" />
-            <CheckBox Grid.Row="3" Content="Copy Search On Open File" IsChecked="{Binding CopyOnOpenFile}" />
-            <CheckBox Grid.Row="4" Content="Enable Caching" IsChecked="{Binding EnableCaching}" />
-            <Label Grid.Row="5" Content="PDF Source Directories" Target="PdfDirectories" />
-            <ListBox
-                Grid.Row="6"
-                x:Name="PdfDirectories"
-                MinHeight="25"
-                ItemsSource="{Binding PdfDirectories}"
-                SelectedItem="{Binding SelectedDirectory}" />
-            <Grid Grid.Row="7">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding NewDirectory}" />
-                <Button Grid.Column="1" Content="Add" Style="{StaticResource ButtonStyle}"
-                        Click="AddPdfDirectoryClicked" />
-                <Button
-                    Grid.Column="2"
-                    Content="Remove" Style="{StaticResource ButtonStyle}"
-                    IsEnabled="{Binding SelectedDirectory, Converter={StaticResource NonEmptyStringToBoolConverter}}"
-                    Click="RemovePdfDirectoryClicked" />
-            </Grid>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <CheckBox Grid.Row="0" Content="Allow Wildcard Search" IsChecked="{Binding AllowWildcardSearch}" />
+        <CheckBox Grid.Row="1" Content="Case Insensitive Search" IsChecked="{Binding CaseInsensitiveSearch}" />
+        <CheckBox Grid.Row="2" Content="Search In Subdirectories" IsChecked="{Binding SearchInSubdirectories}" />
+        <CheckBox Grid.Row="3" Content="Copy Search On Open File" IsChecked="{Binding CopyOnOpenFile}" />
+        <CheckBox Grid.Row="4" Content="Enable Caching" IsChecked="{Binding EnableCaching}" />
+        <Label Grid.Row="5" Content="PDF Source Directories" Target="PdfDirectories" />
+        <ListBox
+            Grid.Row="6"
+            x:Name="PdfDirectories"
+            MinHeight="25"
+            ItemsSource="{Binding PdfDirectories}"
+            SelectedItem="{Binding SelectedDirectory}" />
+        <Grid Grid.Row="7" Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Text="{Binding NewDirectory}" />
+            <Button Grid.Column="1" Content="Add" Style="{StaticResource ButtonStyle}"
+                    Click="AddPdfDirectoryClicked" />
+            <Button
+                Grid.Column="2"
+                Content="Remove" Style="{StaticResource ButtonStyle}"
+                IsEnabled="{Binding SelectedDirectory, Converter={StaticResource NonEmptyStringToBoolConverter}}"
+                Click="RemovePdfDirectoryClicked" />
         </Grid>
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="8" Margin="0,5,0,0" MinHeight="25" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button
                 Content="Defaults"
                 Command="{Binding DefaultsCommand}"
@@ -75,5 +74,5 @@
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 Style="{StaticResource ButtonStyle}" />
         </StackPanel>
-    </DockPanel>
+    </Grid>
 </Window>

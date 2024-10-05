@@ -393,43 +393,51 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         // Perform the search
         foreach (string pdfDirectory in _generalPreferences.PdfDirectories)
         {
-            // Get all the PDF files in the directory
-            string[] pdfFiles = Directory.GetFiles(pdfDirectory, "*.pdf", directorySearchOption);
-
-            // Read the PDF file
-            foreach (string pdfFilePath in pdfFiles)
+            try
             {
-                // Check if we have already processed this file
-                _pdfFiles.TryGetValue(pdfFilePath, out var pdfFile);
+                // Get all the PDF files in the directory
+                string[] pdfFiles = Directory.GetFiles(pdfDirectory, "*.pdf", directorySearchOption);
 
-                if (pdfFile == null)
+                // Read the PDF file
+                foreach (string pdfFilePath in pdfFiles)
                 {
-                    // Would do if statement on TryGetValue but VS doesn't see it as a null check
-                    pdfFile = new PdfFile(pdfFilePath);
-                    _pdfFiles.Add(pdfFilePath, pdfFile);
-                }
+                    // Check if we have already processed this file
+                    _pdfFiles.TryGetValue(pdfFilePath, out var pdfFile);
 
-                // Read PDF file if the hash is empty or different
-                string[]? lines = pdfFile.Lines;
-                byte[] fileHash = GetFileHash(pdfFile);
-                if (!enableCaching || pdfFile.FileHash.Length == 0 || !pdfFile.FileHash.SequenceEqual(fileHash))
-                {
-                    lines = ReadPdfFile(pdfFile, enableCaching);
-                }
-
-                // Search the PDF file
-                if (PdfContainsSearchText(lines, searchText, comparison, regex))
-                {
-                    int searched = totalFilesSearched;
-                    Application.Current.Dispatcher.BeginInvoke(() =>
+                    if (pdfFile == null)
                     {
-                        MatchingPdfFiles.Add(pdfFile);
-                        // Update the total files searched to show progress
-                        TotalFilesSearched = searched;
-                    });
-                }
+                        // Would do if statement on TryGetValue but VS doesn't see it as a null check
+                        pdfFile = new PdfFile(pdfFilePath);
+                        _pdfFiles.Add(pdfFilePath, pdfFile);
+                    }
 
-                totalFilesSearched++;
+                    // Read PDF file if the hash is empty or different
+                    string[]? lines = pdfFile.Lines;
+                    byte[] fileHash = GetFileHash(pdfFile);
+                    if (!enableCaching || pdfFile.FileHash.Length == 0 || !pdfFile.FileHash.SequenceEqual(fileHash))
+                    {
+                        lines = ReadPdfFile(pdfFile, enableCaching);
+                    }
+
+                    // Search the PDF file
+                    if (PdfContainsSearchText(lines, searchText, comparison, regex))
+                    {
+                        int searched = totalFilesSearched;
+                        Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            MatchingPdfFiles.Add(pdfFile);
+                            // Update the total files searched to show progress
+                            TotalFilesSearched = searched;
+                        });
+                    }
+
+                    totalFilesSearched++;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception and continue to the next directory
+                Console.WriteLine($"An error occurred while processing PDF files in directory '{pdfDirectory}': {ex.Message}");
             }
         }
 

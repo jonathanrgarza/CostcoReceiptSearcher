@@ -86,7 +86,7 @@ public partial class PreferencesWindow : ICloseableDialog
             return;
         }
 
-        ViewModel.NewDirectory = folderName;
+        //ViewModel.NewDirectory = folderName;
         if (!ViewModel.AddPdfDirectory(folderName))
         {
             MessageBox.Show(this, "The selected directory already exists in the list.", "Error",
