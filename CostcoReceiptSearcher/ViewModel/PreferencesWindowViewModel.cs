@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Preferences;
 using Ncl.Common.Core.Preferences;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
+using Ncl.Common.Wpf.ViewModels;
 
 namespace CostcoReceiptSearcher.ViewModel;
 
@@ -93,6 +95,7 @@ public interface IPreferencesWindowViewModel : INotifyPropertyChanged
 /// </summary>
 public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewModel
 {
+    private readonly IDialogService _dialogService;
     private readonly IPreferenceService _preferenceService;
     private bool _allowWildcardSearch;
     private bool _caseInsensitiveSearch;
@@ -109,9 +112,11 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     /// Initializes a new instance of the <see cref="PreferencesWindowViewModel"/> class.
     /// </summary>
     /// <param name="preferenceService">The preference service.</param>
-    public PreferencesWindowViewModel(IPreferenceService preferenceService)
+    /// <param name="dialogService">The dialog service.</param>
+    public PreferencesWindowViewModel(IPreferenceService preferenceService, IDialogService dialogService)
     {
         _preferenceService = preferenceService ?? throw new ArgumentNullException(nameof(preferenceService));
+        _dialogService = dialogService;
         _preferences = new GeneralPreferences();
         _newDirectory = string.Empty;
         _selectedDirectory = string.Empty;
@@ -356,7 +361,24 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         _preferences.PdfDirectories = _pdfDirectories.ToList();
         // Save the preferences
         _preferenceService.SetPreference(_preferences);
-        _preferenceService.SavePreference<GeneralPreferences>();
+        try
+        {
+            _preferenceService.SavePreference<GeneralPreferences>();
+        }
+        catch (ArgumentException e)
+        {
+            var dialogOptions =
+                MessageBoxDialogViewModel.CreateErrorDialog("Failed to save preferences to file\n" +
+                                                            $"Ensure '{_preferenceService.GetPreferenceDirectoryPath<GeneralPreferences>()}' path exists.");
+            _dialogService.ShowDialog(dialogOptions);
+        }
+        catch (IOException e)
+        {
+            var dialogOptions =
+                MessageBoxDialogViewModel.CreateErrorDialog("Failed to save preferences to file\n" +
+                                                            $"Ensure '{_preferenceService.GetPreferenceDirectoryPath<GeneralPreferences>()}' path exists.");
+            _dialogService.ShowDialog(dialogOptions);
+        }
 
         // Close the window
         closeable.CloseDialog(true);

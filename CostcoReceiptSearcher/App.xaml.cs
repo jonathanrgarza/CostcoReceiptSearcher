@@ -6,8 +6,10 @@ using CostcoReceiptSearcher.View;
 using CostcoReceiptSearcher.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Ncl.Common.Core.Preferences;
 using Ncl.Common.Wpf.Infrastructure;
+using NLog.Extensions.Logging;
 
 namespace CostcoReceiptSearcher;
 
@@ -16,12 +18,16 @@ namespace CostcoReceiptSearcher;
 /// </summary>
 public partial class App
 {
+    private readonly ILogger<App> _logger;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="App"/> class.
     /// </summary>
     public App()
     {
         AppHost = Host.CreateDefaultBuilder().ConfigureServices(ConfigureServices).Build();
+
+        _logger = AppHost.Services.GetRequiredService<ILogger<App>>();
     }
 
     /// <summary>
@@ -36,6 +42,15 @@ public partial class App
     /// <param name="services">The service collection.</param>
     private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
     {
+        // Add the logger
+        services.AddLogging(builder =>
+        {
+            // configure Logging with NLog
+            builder.ClearProviders();
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddNLog();
+        });
+
         // Add preferences service
         services.AddSingleton<PreferenceService>(); // Explicitly register the preference service so we can "forward" it
         // Forward the preference service as the two interfaces it implements
@@ -64,23 +79,31 @@ public partial class App
     /// <param name="e">The startup event arguments.</param>
     protected override async void OnStartup(StartupEventArgs e)
     {
-        await AppHost!.StartAsync();
+        try
+        {
+            await AppHost!.StartAsync();
 
-        var services = AppHost.Services;
-        // Setup window manager
-        var windowManager = SetupWindowManagerRegistrations(services);
+            var services = AppHost.Services;
+            // Setup window manager
+            var windowManager = SetupWindowManagerRegistrations(services);
 
-        // Setup dialog registrations
-        SetupDialogManagerRegistrations(services);
+            // Setup dialog registrations
+            SetupDialogManagerRegistrations(services);
 
-        // Setup preference service
-        SetupPreferenceService(services);
+            // Setup preference service
+            SetupPreferenceService(services);
 
-        // Show the main window
-        var mainWindow = services.GetRequiredService<MainWindow>();
-        windowManager.ShowWindow(mainWindow);
+            // Show the main window
+            var mainWindow = services.GetRequiredService<MainWindow>();
+            windowManager.ShowWindow(mainWindow);
 
-        base.OnStartup(e);
+            base.OnStartup(e);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during application startup.");
+            Shutdown();
+        }
     }
 
     /// <summary>
@@ -89,8 +112,16 @@ public partial class App
     /// <param name="e">The exit event arguments.</param>
     protected override async void OnExit(ExitEventArgs e)
     {
-        await AppHost!.StopAsync();
-        base.OnExit(e);
+        try
+        {
+            await AppHost!.StopAsync();
+            base.OnExit(e);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred during application startup.");
+            Shutdown();
+        }
     }
 
     /// <summary>

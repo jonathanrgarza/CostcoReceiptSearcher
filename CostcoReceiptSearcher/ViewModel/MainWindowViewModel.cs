@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -308,8 +309,10 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
         var newPreferences = (GeneralPreferences)e.NewValue;
         _generalPreferences = newPreferences;
 
+        var oldPreferences = (GeneralPreferences)e.OldValue;
+
         // Check if the caching preference has changed
-        if (newPreferences.EnableCaching == ((GeneralPreferences)e.OldValue).EnableCaching) return;
+        if (oldPreferences != null && newPreferences.EnableCaching == oldPreferences.EnableCaching) return;
 
         foreach (var pdfFile in _pdfFiles)
         {
@@ -437,7 +440,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             catch (Exception ex)
             {
                 // Handle the exception and continue to the next directory
-                Console.WriteLine($"An error occurred while processing PDF files in directory '{pdfDirectory}': {ex.Message}");
+                Console.WriteLine(
+                    $"An error occurred while processing PDF files in directory '{pdfDirectory}': {ex.Message}");
             }
         }
 
@@ -540,7 +544,7 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
                     Clipboard.SetText(_searchText, TextDataFormat.UnicodeText);
                 }
             }
-            catch (System.Runtime.InteropServices.ExternalException ex)
+            catch (ExternalException ex)
             {
                 Console.WriteLine($"An error occurred while accessing the Clipboard: {ex.Message}");
             }
