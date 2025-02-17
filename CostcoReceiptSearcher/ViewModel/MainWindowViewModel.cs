@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Model;
 using CostcoReceiptSearcher.Preferences;
+using Microsoft.Extensions.Logging;
 using Ncl.Common.Core.Preferences;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
@@ -96,6 +97,11 @@ public interface IMainWindowViewModel : INotifyPropertyChanged
 public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
 {
     /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ILogger<MainWindowViewModel> _logger;
+
+    /// <summary>
     /// The dialog service used for displaying dialogs.
     /// </summary>
     private readonly IDialogService _dialogService;
@@ -143,10 +149,12 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindowViewModel"/> class.
     /// </summary>
+    /// <param name="logger">The logger to be used.</param>
     /// <param name="dialogService">The dialog service used for displaying dialogs.</param>
     /// <param name="preferenceService">The preference service used for managing application preferences.</param>
-    public MainWindowViewModel(IDialogService dialogService, IPreferenceService preferenceService)
+    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, IDialogService dialogService, IPreferenceService preferenceService)
     {
+        _logger = logger;
         _dialogService = dialogService;
         _preferenceService = preferenceService;
 
@@ -440,8 +448,8 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             catch (Exception ex)
             {
                 // Handle the exception and continue to the next directory
-                Console.WriteLine(
-                    $"An error occurred while processing PDF files in directory '{pdfDirectory}': {ex.Message}");
+                _logger.LogError(ex,
+                    "An error occurred while processing PDF files in directory '{pdfDirectory}'", pdfDirectory);
             }
         }
 
@@ -546,11 +554,11 @@ public class MainWindowViewModel : ViewModelBase, IMainWindowViewModel
             }
             catch (ExternalException ex)
             {
-                Console.WriteLine($"An error occurred while accessing the Clipboard: {ex.Message}");
+                _logger.LogError(ex, "An error occurred while accessing the Clipboard");
             }
             catch (ThreadStateException ex)
             {
-                Console.WriteLine($"An error occurred due to thread state: {ex.Message}");
+                _logger.LogError(ex, "An error occurred due to thread state");
             }
         }
 

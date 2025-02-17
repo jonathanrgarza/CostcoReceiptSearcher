@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Reflection;
+using System.Windows;
 using CostcoReceiptSearcher.Extensions;
 using CostcoReceiptSearcher.Infrastructure;
 using CostcoReceiptSearcher.Preferences;
@@ -84,6 +85,10 @@ public partial class App
             await AppHost!.StartAsync();
 
             var services = AppHost.Services;
+
+            //Setup unhandled exception handling
+            SetupUnhandledExceptionHandling();
+
             // Setup window manager
             var windowManager = SetupWindowManagerRegistrations(services);
 
@@ -162,5 +167,29 @@ public partial class App
 
         // Register the preferences
         preferenceService.RegisterDefaultPreferences([new GeneralPreferences()]);
+    }
+
+    private void SetupUnhandledExceptionHandling()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+
+        DispatcherUnhandledException += (s, e) =>
+        {
+            LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
+            e.Handled = true;
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, e) =>
+        {
+            LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
+            e.SetObserved();
+        };
+    }
+
+    private void LogUnhandledException(Exception ex, string method)
+    {
+        var assemblyName = Assembly.GetExecutingAssembly().GetName();
+        _logger.LogCritical(ex, "Unhandled Exception occured in {assembly} via {method}", assemblyName.Name, method);
     }
 }
