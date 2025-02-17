@@ -171,16 +171,16 @@ public partial class App
 
     private void SetupUnhandledExceptionHandling()
     {
-        AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+        AppDomain.CurrentDomain.UnhandledException += (_, e) =>
             LogUnhandledException((Exception)e.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
 
-        DispatcherUnhandledException += (s, e) =>
+        DispatcherUnhandledException += (_, e) =>
         {
             LogUnhandledException(e.Exception, "Application.Current.DispatcherUnhandledException");
             e.Handled = true;
         };
 
-        TaskScheduler.UnobservedTaskException += (s, e) =>
+        TaskScheduler.UnobservedTaskException += (_, e) =>
         {
             LogUnhandledException(e.Exception, "TaskScheduler.UnobservedTaskException");
             e.SetObserved();
