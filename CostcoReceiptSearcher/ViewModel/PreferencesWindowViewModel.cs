@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using CostcoReceiptSearcher.Preferences;
+using Microsoft.Extensions.Logging;
 using Ncl.Common.Core.Preferences;
 using Ncl.Common.Core.UI;
 using Ncl.Common.Wpf.Infrastructure;
@@ -96,6 +97,7 @@ public interface IPreferencesWindowViewModel : INotifyPropertyChanged
 public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewModel
 {
     private readonly IDialogService _dialogService;
+    private readonly ILogger<PreferencesWindowViewModel> _logger;
     private readonly IPreferenceService _preferenceService;
     private bool _allowWildcardSearch;
     private bool _caseInsensitiveSearch;
@@ -111,10 +113,13 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
     /// <summary>
     /// Initializes a new instance of the <see cref="PreferencesWindowViewModel"/> class.
     /// </summary>
+    /// <param name="logger">The logger.</param>
     /// <param name="preferenceService">The preference service.</param>
     /// <param name="dialogService">The dialog service.</param>
-    public PreferencesWindowViewModel(IPreferenceService preferenceService, IDialogService dialogService)
+    public PreferencesWindowViewModel(ILogger<PreferencesWindowViewModel> logger, IPreferenceService preferenceService,
+        IDialogService dialogService)
     {
+        _logger = logger;
         _preferenceService = preferenceService ?? throw new ArgumentNullException(nameof(preferenceService));
         _dialogService = dialogService;
         _preferences = new GeneralPreferences();
@@ -365,15 +370,17 @@ public class PreferencesWindowViewModel : ViewModelBase, IPreferencesWindowViewM
         {
             _preferenceService.SavePreference<GeneralPreferences>();
         }
-        catch (ArgumentException e)
+        catch (ArgumentException ex)
         {
+            _logger.LogError(ex, "Failed to save preferences to file");
             var dialogOptions =
                 MessageBoxDialogViewModel.CreateErrorDialog("Failed to save preferences to file\n" +
                                                             $"Ensure '{_preferenceService.GetPreferenceDirectoryPath<GeneralPreferences>()}' path exists.");
             _dialogService.ShowDialog(dialogOptions);
         }
-        catch (IOException e)
+        catch (IOException ex)
         {
+            _logger.LogError(ex, "Failed to save preferences to file");
             var dialogOptions =
                 MessageBoxDialogViewModel.CreateErrorDialog("Failed to save preferences to file\n" +
                                                             $"Ensure '{_preferenceService.GetPreferenceDirectoryPath<GeneralPreferences>()}' path exists.");
